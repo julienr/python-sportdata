@@ -39,9 +39,9 @@ class Lap(TCXBase):
     def __init__(self, elm):
         super(Lap, self).__init__(elm)
         self.start_time = dateutil.parser.parse(elm.attrib['StartTime'])
-        self.duration = elm.TotalTimeSeconds
-        self.distance = elm.DistanceMeters.pyval
-        self.calories = elm.Calories.pyval
+        self.duration = float(elm.TotalTimeSeconds.pyval)
+        self.distance = float(elm.DistanceMeters.pyval)
+        self.calories = float(elm.Calories.pyval)
         # Optional attributes
         self.max_speed = self.find('ns:MaximumSpeed')
         if self.find('ns:Track') is not None:
