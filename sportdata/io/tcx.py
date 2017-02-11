@@ -19,15 +19,14 @@ class TCXBase(object):
         return self._elm.xpath(query, namespaces={'ns': TCX_NAMESPACE})
 
     def find(self, what):
-        return self._elm.find('ns:MaximumSpeed',
-                              namespaces={'ns': TCX_NAMESPACE})
+        return self._elm.find(what, namespaces={'ns': TCX_NAMESPACE})
 
 
 class Trackpoint(TCXBase):
     def __init__(self, elm):
         super(Trackpoint, self).__init__(elm)
         self.time = dateutil.parser.parse(elm.Time.pyval)
-        if elm.Position is not None:
+        if self.find('ns:Position') is not None:
             self.latlng = (elm.Position.LatitudeDegrees.pyval,
                            elm.Position.LongitudeDegrees.pyval)
         else:
@@ -45,7 +44,10 @@ class Lap(TCXBase):
         self.calories = elm.Calories.pyval
         # Optional attributes
         self.max_speed = self.find('ns:MaximumSpeed')
-        self.trackpoints = [Trackpoint(e) for e in elm.Track.getchildren()]
+        if self.find('ns:Track') is not None:
+            self.trackpoints = [Trackpoint(e) for e in elm.Track.getchildren()]
+        else:
+            self.trackpoints = []
 
     def __repr__(self):
         return "Lap[dur=%d, dist=%d, max_speed=%d, cal=%d, %d points]" % (
