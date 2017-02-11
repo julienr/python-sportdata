@@ -4,7 +4,10 @@ python:
   - "3.5"
 
 # command to install dependencies
-install: "pip install ."
+install:
+  - pip install -U pytest
+  - pip install .
 
 # command to run tests
-script: py.test
+script:
+  - py.test
