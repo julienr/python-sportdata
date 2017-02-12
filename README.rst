@@ -8,6 +8,9 @@ python-sportdata
 
 Python package to download, access and analyze sport data.
 
+The `notebooks` folder contains some example notebooks doing data analysis
+on this data.
+
 Alternatives/inspirations
 -------------------------
 - https://github.com/K-Phoen/python-fitparse

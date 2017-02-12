@@ -59,6 +59,7 @@ class Activity(TCXBase):
     """Represent an Activity which consists of multiple laps"""
     def __init__(self, elm):
         super(Activity, self).__init__(elm)
+        self.sport = elm.attrib['Sport']
         self.time = dateutil.parser.parse(elm.Id.pyval)
         self.laps = [Lap(e) for e in elm.Lap]
 
