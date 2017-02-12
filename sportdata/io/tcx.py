@@ -3,6 +3,8 @@ This modules implements TCX files loading
 
 The xml schema is available here :
     http://www8.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd
+
+Inspired by https://github.com/vkurup/python-tcxparser
 """
 from __future__ import print_function
 from lxml import objectify
