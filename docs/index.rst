@@ -7,6 +7,7 @@ Welcome to python-sportdata's documentation!
    :caption: Contents:
 
    io
+   download
 
 
 Indices and tables
