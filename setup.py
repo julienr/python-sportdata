@@ -12,5 +12,6 @@ setup(
         'lxml',
         'dateutils',
         'numpy',
+        'requests',
     ]
 )
