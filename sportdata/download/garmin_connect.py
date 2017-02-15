@@ -13,6 +13,7 @@ Example usage ::
 """
 from __future__ import print_function
 import os
+import json
 import requests
 import getpass
 import logging
@@ -115,16 +116,13 @@ class GarminConnectDownloader(object):
 
         Returns:
             A tuple (`activities`, `total_activities`). `activities` contains
-            a list of (`activity_id`, `activity_name`) tuples while total_activites
+            an array of JSON activity descriptions and `total_activites`
             contains the total number of activities available on the server
             (including activities outside of start/limit)
         """
         data = self.search(start, limit)
         total_activities = int(data['results']['search']['totalFound'])
-        activities = []
-        for act in data['results']['activities']:
-            activities.append((act['activity']['activityId'],
-                               act['activity']['activityName']['value']))
+        activities = data['results']['activities']
         return activities, total_activities
 
     def get_all_activities(self):
@@ -189,6 +187,8 @@ class GarminConnectDownloader(object):
         """
         Combines get_all_activities and download for each activity found
         This will skip activities that have already been downloaded
+        In addition to the .`filetype` file, this will also create a .json
+        file containing activity metadata
 
         Args:
             continue_on_fail: If True, will continue downloading other
@@ -202,11 +202,19 @@ class GarminConnectDownloader(object):
         n_skipped = 0
         n_error = 0
         activities = downloader.get_all_activities()
+
         self.logger.info('%d activities found' % len(activities))
         for act in activities:
-            act_id, act_name = act
+            act_id = act['activity']['activityId']
+            act_name = act['activity']['activityName']['value']
             filename = os.path.join(outdir,
                                     'activity_%s.%s' % (act_id, filetype))
+            json_filename = os.path.join(outdir, 'activity_%s.json' % act_id)
+            if not os.path.exists(json_filename):
+                self.logger.info('Saving %s' % json_filename)
+                with open(json_filename, 'w') as f:
+                    json.dump(act, f)
+
             if os.path.exists(filename):
                 self.logger.info('Skipping %s - %s already exists' %
                                  (act_id, act_name))
